@@ -15,6 +15,8 @@ object aoc2021_app {
     val result = problem_name match {
       case "1a" => solution_1a(file)
       case "1b" => solution_1b(file)
+      case "2a" => solution_2a(file)
+      case "2b" => solution_2b(file)
     }
     println(result)
   }
