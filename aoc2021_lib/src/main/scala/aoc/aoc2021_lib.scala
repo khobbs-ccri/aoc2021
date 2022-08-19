@@ -1,5 +1,6 @@
 package aoc
 
+import scala.collection.immutable.Map
 import scala.io.BufferedSource
 import scala.util.matching.Regex
 
@@ -88,4 +89,53 @@ object aoc2021_lib {
         (sp: sub_position, c: String) => sp.interpret_aimed_command(c)
       ).position_product
   }
+
+  // 3a
+  def column_character_counts(
+                               strings: Iterable[String]
+                             ): Map[Int, Map[Char, Int]] = {
+    val occurrences = for {
+      s <- strings
+      cp <- s.zipWithIndex
+    } yield cp
+    occurrences.foldLeft(Map[Int, Map[Char, Int]]())((counts, occurrence) => {
+      val column = occurrence._2
+      val character = occurrence._1
+      val character_counts = counts.getOrElse(column, Map[Char, Int]())
+      val count = character_counts.getOrElse(character, 0) + 1
+      val character_count_update = character_counts + (character -> count)
+      counts + (column ->  character_count_update )
+    })
+  }
+  def most_common_character(counts: Map[Char, Int]): Char = counts.foldLeft(
+    ('\u0000', Int.MinValue))((a, b) => if (a._2 > b._2) a else b
+  )._1
+  def column_most_common_characters(
+                                    counts: Map[Int, Map[Char, Int]]
+                                  ): List[Char] = {
+    // Because I'm worried about key ordering
+    import scala.collection.immutable.SortedMap
+    SortedMap.from(counts).values.map(most_common_character).toList
+  }
+  def least_common_character(counts: Map[Char, Int]): Char = counts.foldLeft(
+    ('\u0000', Int.MaxValue))((a, b) => if (a._2 < b._2) a else b
+  )._1
+
+  def column_least_common_characters(
+                                     counts: Map[Int, Map[Char, Int]]
+                                   ): List[Char] = {
+    // Because I'm worried about key ordering
+    import scala.collection.immutable.SortedMap
+    SortedMap.from(counts).values.map(least_common_character).toList
+  }
+  def char_list_to_int(bits: List[Char]): Int = {
+    bits.foldLeft(0)((num,char)=> (num << 1 ) + (if (char == '1') 1 else 0))
+  }
+  def solution_3a(file: BufferedSource): Int = {
+    val counts = column_character_counts(file.getLines().toList)
+    val gamma_rate = char_list_to_int(column_most_common_characters(counts))
+    val epsilon_rate = char_list_to_int(column_least_common_characters(counts))
+    gamma_rate * epsilon_rate
+  }
+
 }

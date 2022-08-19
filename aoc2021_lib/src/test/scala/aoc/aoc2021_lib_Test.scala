@@ -42,6 +42,36 @@ class aoc2021_lib_Test extends Specification {
     "solve the 2b example" >> {
       solution_2b(scala.io.Source.fromResource("input_2.txt")) mustEqual 900
     }
+    // 3a
+    "Convert an iterable of strings to a character counts by column" >> {
+      column_character_counts(List("00", "01")) mustEqual Map(
+        0 -> Map('0' -> 2),
+        1 -> Map('0' -> 1, '1' -> 1  )
+      )
+    }
+    "Find the most common character per column" >> {
+      column_most_common_characters(
+        Map(
+          0 -> Map('0' -> 2, '1' -> 7),
+          1 -> Map('0' -> 5, '1' -> 3)
+        )) mustEqual List('1','0' )
+    }
+    "Find the least common character per column" >> {
+      column_least_common_characters(
+        Map(
+          0 -> Map('0' -> 2, '1' -> 7),
+          1 -> Map('0' -> 5, '1' -> 3)
+        )) mustEqual List('0', '1')
+    }
+    "Convert a list of chars in {0, 1} to an integer" >> {
+      char_list_to_int( List('0', '0')) mustEqual 0
+      char_list_to_int( List('0', '1')) mustEqual 1
+      char_list_to_int( List('1', '0')) mustEqual 2
+      char_list_to_int( List('1', '1')) mustEqual 3
+    }
+    "solve the 3a example" >> {
+      solution_3a(scala.io.Source.fromResource("input_3.txt")) mustEqual 198
+    }
   }
 
 }
