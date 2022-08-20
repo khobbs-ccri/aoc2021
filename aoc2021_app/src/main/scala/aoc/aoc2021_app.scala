@@ -18,6 +18,7 @@ object aoc2021_app {
       case "2a" => solution_2a(file)
       case "2b" => solution_2b(file)
       case "3a" => solution_3a(file)
+      case "3b" => solution_3b(file)
     }
     println(result)
   }

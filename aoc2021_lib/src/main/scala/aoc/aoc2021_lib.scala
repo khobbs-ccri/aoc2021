@@ -1,6 +1,5 @@
 package aoc
 
-import scala.collection.immutable.Map
 import scala.io.BufferedSource
 import scala.util.matching.Regex
 
@@ -136,6 +135,51 @@ object aoc2021_lib {
     val gamma_rate = char_list_to_int(column_most_common_characters(counts))
     val epsilon_rate = char_list_to_int(column_least_common_characters(counts))
     gamma_rate * epsilon_rate
+  }
+
+  // 3b
+  def single_column_character_counts(
+                                      strings: List[String],
+                                      col: Int
+                                    ): Map[Char, Int] = {
+    strings.map(_(col)).groupMapReduce(identity)(_=>1)(_+_)
+  }
+
+  def least_common_or_0(counts: Map[Char, Int]): Char = {
+    val zeros = counts.getOrElse('0', 0)
+    val ones = counts.getOrElse('1', 0)
+    if (zeros < ones) '0' else if (ones < zeros) '1' else '0'
+  }
+
+  def most_common_or_1(counts: Map[Char, Int] ): Char = {
+    val zeros = counts.getOrElse('0', 0)
+    val ones  = counts.getOrElse('1', 0)
+    if ( zeros > ones ) '0' else
+    if ( ones > zeros ) '1' else  '1'
+  }
+
+  def int_of_filtered_strings(
+                              strings: List[String],
+                              col: Int,
+                              comp: Map[Char, Int] => Char
+                            ): Int = {
+    // I'm being a little trusting here. I think I can craft an input that will
+    // fail to reduce the "most common" filter in the number of bits.
+    if (strings.size == 1)
+      char_list_to_int(strings.head.toList)
+    else {
+      val counts = single_column_character_counts(strings, col)
+      val required_char = comp(counts)
+      val filtered_strings = strings.filter(_(col) == required_char)
+      int_of_filtered_strings( filtered_strings, col + 1, comp)
+    }
+  }
+
+  def solution_3b(file: BufferedSource): Int = {
+    val strings = file.getLines().toList
+    val most = int_of_filtered_strings( strings, 0, most_common_or_1)
+    val least = int_of_filtered_strings(strings, 0, least_common_or_0)
+    most * least
   }
 
 }

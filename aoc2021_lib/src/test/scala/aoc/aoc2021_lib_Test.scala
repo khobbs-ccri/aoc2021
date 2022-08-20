@@ -72,6 +72,27 @@ class aoc2021_lib_Test extends Specification {
     "solve the 3a example" >> {
       solution_3a(scala.io.Source.fromResource("input_3.txt")) mustEqual 198
     }
+    // 3b
+    "Count characters in a single column" >> {
+      val strings = List(
+        "000",
+        "001",
+        "010",
+        "011"
+      )
+      single_column_character_counts(strings, 0) mustEqual Map('0'->4)
+      single_column_character_counts(strings, 1) mustEqual Map('0'->2, '1' -> 2)
+      single_column_character_counts(strings, 2) mustEqual Map('0'->2, '1' -> 2)
+    }
+    "filter_strings" >> {
+      val strings = scala.io.Source.fromResource("input_3.txt").getLines().toList
+      int_of_filtered_strings(strings, 0,  most_common_or_1) mustEqual 23
+      int_of_filtered_strings(strings, 0, least_common_or_0) mustEqual 10
+    }
+    "solve the 3b example" >> {
+      solution_3b(scala.io.Source.fromResource("input_3.txt")) mustEqual 230
+    }
+
   }
 
 }
